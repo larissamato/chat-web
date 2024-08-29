@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es2015",
+    "types": ["vite/client", "vitest/globals", "cypress"],
+    "strictNullChecks": true,
+    "useDefineForClassFields": true,
+    "allowJs": false,
+    "esModuleInterop": true,
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "strictFunctionTypes": true,
+    "rootDirs": ["src"],
+    "strictPropertyInitialization": true,
+    "moduleResolution": "Node",
+    "isolatedModules": false,
+    "noEmit": false,
+    "jsx": "react-jsx",
+    "strict": true
+  },
+  "include": ["src", "./cypress.d.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "extends": "./tsconfig.paths.json",
+  "exclude": ["cypress.config.ts", "cypress", "node_modules"]
+}
