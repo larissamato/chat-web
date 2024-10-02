@@ -19,8 +19,9 @@ import { api } from "@helpers/api";
 import { useTheme } from "styled-components";
 import { useUser } from "@contexts/UserContext";
 import {} from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
 import Icon from "@components/common/Icon";
+
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 const { Text } = Typography;
 interface IMessage {
@@ -37,7 +38,7 @@ const Chat = () => {
   const { user, setIsLogged } = useUser();
 
   useEffect(() => {
-    const pusher = new Pusher("1a896bd04c2e7bdcc160", {
+    const pusher = new Pusher(API_KEY, {
       cluster: "us2",
     });
 
