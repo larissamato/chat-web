@@ -6,7 +6,7 @@ import PrivateRoute from "@routes/PrivateRoute";
 const RouterContext = () => {
   const { islogged } = useUser();
 
-  return <RouterProvider router={!islogged ? PublicRoute : PrivateRoute} />;
+  return <RouterProvider router={!islogged ? PrivateRoute : PrivateRoute} />;
 };
 
 export default RouterContext;

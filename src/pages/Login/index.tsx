@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { Form, Input, Button, InputNumber, message } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  InputNumber,
+  Flex,
+  Typography,
+  Col,
+  Row,
+  message,
+} from "antd";
 import { useNavigate } from "react-router-dom";
 import { api } from "@helpers/api";
 import { useUser } from "@contexts/UserContext";
@@ -29,8 +39,10 @@ const LoginPage = () => {
   };
 
   return (
-    <div style={{ padding: "50px" }}>
-      <h1>Login</h1>
+    <Row>
+      <Col span={12} offset={12}>
+        <h1>Login</h1>
+      </Col>
       <Form layout="vertical" onFinish={handleSubmit}>
         <Form.Item label="Nome de Usuário" required>
           <Input
@@ -52,7 +64,7 @@ const LoginPage = () => {
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </Row>
   );
 };
 

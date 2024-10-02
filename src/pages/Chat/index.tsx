@@ -1,28 +1,34 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@contexts/UserContext";
-import { List, Input, Button, Row, Col, Avatar } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import {
+  List,
+  Input,
+  Button,
+  Row,
+  Col,
+  Typography,
+  Timeline,
+  Space,
+  Card,
+  Flex,
+  Tooltip,
+  Avatar,
+} from "antd";
 import Pusher from "pusher-js";
 import { api } from "@helpers/api";
-import axios from "axios";
+import { useTheme } from "styled-components";
 
-const data = [
-  {
-    title: "Ant Design Title 1",
-  },
-  {
-    title: "Ant Design Title 2",
-  },
-  {
-    title: "Ant Design Title 3",
-  },
-  {
-    title: "Ant Design Title 4",
-  },
-];
+const { Text, Title } = Typography;
+interface IMessage {
+  message: string;
+  time: string;
+  username: string;
+  port: number;
+}
 
 const Chat = () => {
-  const { user } = useUser();
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
 
   useEffect(() => {
@@ -31,8 +37,8 @@ const Chat = () => {
     });
 
     const channel = pusher.subscribe("chat-channel");
-    channel.bind("new-message", (data: { message: string }) => {
-      setMessages((prevMessages) => [...prevMessages, data.message]);
+    channel.bind("new-message", (data: IMessage) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
     });
 
     return () => {
@@ -44,60 +50,107 @@ const Chat = () => {
   const handleSendMessage = async () => {
     if (newMessage.trim() !== "") {
       await api.post("/message", {
-        username: user.name,
-        port: user.port,
+        username: "larissa",
+        port: 8000,
         message: newMessage,
       });
       setNewMessage("");
     }
   };
+  return (
+    <>
+      <ChatTimeline data={messages} />
+      <Row
+        gutter={[16, 16]}
+        style={{
+          position: "fixed",
+          bottom: 10,
+          width: "100%",
+          overflowX: "hidden",
+        }}
+      >
+        <Col span={20}>
+          <Input
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onPressEnter={handleSendMessage}
+            placeholder="Digite sua mensagem..."
+          />
+        </Col>
+        <Col span={2}>
+          <Button type="primary" onClick={handleSendMessage}>
+            Enviar
+          </Button>
+        </Col>
+      </Row>
+    </>
+  );
+};
+
+const ChatTimeline = ({ data }: { data: IMessage[] }) => {
+  const items: any = [];
+  data.map((e) => {
+    generateTimeline(e, items);
+  });
 
   return (
-    <Row>
-      <Col span={8} style={{ padding: "20px" }}>
-        <List
-          itemLayout="horizontal"
-          dataSource={data}
-          renderItem={(item, index) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={
-                  <Avatar
-                    src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
-                  />
-                }
-                title={<a href="https://ant.design">{item.title}</a>}
-                description="hahahaha"
-              />
-            </List.Item>
-          )}
-        />
-      </Col>
-      <Col span={16} style={{ padding: "20px" }}>
-        <h2>Chat</h2>
-        <div style={{ maxHeight: "400px", overflowY: "auto" }}>
-          <List
-            bordered
-            dataSource={messages}
-            renderItem={(msg) => <List.Item>{msg}</List.Item>}
-          />
-        </div>
-        <Input
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onPressEnter={handleSendMessage}
-          placeholder="Digite sua mensagem..."
-          style={{ marginTop: "10px" }}
-        />
-        <Button
-          type="primary"
-          onClick={handleSendMessage}
-          style={{ marginTop: "10px" }}
-        >
-          Enviar
-        </Button>
-      </Col>
-    </Row>
+    <Col lg={{ span: 18, offset: 3 }} xs={{ span: 22, offset: 1 }}>
+      <Timeline items={items} />
+    </Col>
+  );
+};
+
+const generateTimeline = (followup: IMessage, items: any) => {
+  items.push({
+    children: <FollowupList data={followup} />,
+    dot: <ChatAvatar data={followup} />,
+  });
+};
+
+const FollowupList = ({ data }: { data: IMessage }) => {
+  const theme = useTheme();
+  return (
+    <Col span={24}>
+      <Card
+        style={{
+          backgroundColor: theme.blue,
+          color: theme.white,
+        }}
+      >
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <TextColor text={`${data.username}`} />
+          <TextColor text={data.message} />
+          <Flex justify={"flex-end"} align={"flex-end"}>
+            <TextColor text={`${data.time} - porta: ${data.port}`} />
+          </Flex>
+        </Space>
+      </Card>
+    </Col>
+  );
+};
+
+const ChatAvatar = ({ data }: { data: IMessage }) => {
+  const theme = useTheme();
+
+  return (
+    <Tooltip title={data?.username}>
+      <Avatar style={{ backgroundColor: theme.blue }} icon={<UserOutlined />} />
+    </Tooltip>
+  );
+};
+
+const TextColor = ({ text, color }: { text: string; color?: string }) => {
+  const textColor = color ? color : "white";
+
+  return (
+    <Text>
+      <div
+        style={{ color: textColor }}
+        dangerouslySetInnerHTML={{
+          __html: text,
+        }}
+      />
+    </Text>
   );
 };
 
