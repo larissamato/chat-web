@@ -1,0 +1,108 @@
+body {
+    font-family: Montserrat, Arial, Helvetica, sans-serif;
+    margin: 0;
+    background: url('/assets/images/auth-cloud.png');
+    background-size: cover;
+}
+
+#wave-effect {
+    display: flex;
+    height: 100vh;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+video {
+    position: fixed;
+    z-index: -2;
+    top: 0;
+    left: 0;
+    height: 106%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.login-form-1 {
+    padding: 2%;
+}
+.login-form-1 h3 {
+    text-align: center;
+    color: #333;
+}
+.login-form-2 {
+    padding: 5%;
+}
+.login-form-2 h3 {
+    text-align: center;
+    color: #fff;
+}
+
+lottie-player{
+    width: 12rem;
+}
+
+@media (min-width: 577px) {
+
+    lottie-player {
+      width: 450px;
+    }
+}
+
+
+a>small:hover {
+    color:#990000 !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.btn {
+    border-radius: 10px !important;
+}
+
+.btn-1 {
+    color: white;
+    background-color: #990000;
+}
+
+.btn-2 {
+    color: #990000;
+    background-color: #fff;
+    border: 1px solid #990000;
+}
+
+.btn-2:hover {
+    color: white;
+    background-color: #990000;
+}
+
+.btn-1:hover {
+    color: #990000;
+    background-color: #fff;
+    border: 1px solid #990000;
+}
+
+input {
+    border-radius: 10px !important;
+}
+
+input:focus {
+    box-shadow: 0 0 0 0.25rem rgb(153 0 0 / 25%) !important;
+    border: none !important;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#google-logo {
+    width: 22px;
+    float: left;
+}

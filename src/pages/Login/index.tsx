@@ -1,15 +1,5 @@
 import { useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  InputNumber,
-  Flex,
-  Typography,
-  Col,
-  Row,
-  message,
-} from "antd";
+import { Form, Input, Button, InputNumber, Col, Row, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { api } from "@helpers/api";
 import { useUser } from "@contexts/UserContext";
@@ -31,10 +21,7 @@ const LoginPage = () => {
         message.error("Erro ao conectar.");
       }
     } catch (error) {
-      console.error("Erro ao fazer o login:", error);
-      message.error(
-        "Erro ao conectar. Verifique o console para mais detalhes."
-      );
+      message.error("Erro ao conectar. Servidor Indisponível");
     }
   };
 
@@ -43,27 +30,29 @@ const LoginPage = () => {
       <Col span={12} offset={12}>
         <h1>Login</h1>
       </Col>
-      <Form layout="vertical" onFinish={handleSubmit}>
-        <Form.Item label="Nome de Usuário" required>
-          <Input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </Form.Item>
-        <Form.Item label="Porta" required>
-          <InputNumber
-            value={port}
-            onChange={(value) => setPort(value)}
-            required
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Entrar
-          </Button>
-        </Form.Item>
-      </Form>
+      <Col span={12} offset={12}>
+        <Form layout="vertical" onFinish={handleSubmit}>
+          <Form.Item label="Nome de Usuário" required>
+            <Input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </Form.Item>
+          <Form.Item label="Porta" required>
+            <InputNumber
+              value={port}
+              onChange={(value) => setPort(value)}
+              required
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Entrar
+            </Button>
+          </Form.Item>
+        </Form>
+      </Col>
     </Row>
   );
 };

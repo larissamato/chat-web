@@ -17,6 +17,10 @@ import {
 import Pusher from "pusher-js";
 import { api } from "@helpers/api";
 import { useTheme } from "styled-components";
+import { useUser } from "@contexts/UserContext";
+import {} from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
+import Icon from "@components/common/Icon";
 
 const { Text } = Typography;
 interface IMessage {
@@ -24,11 +28,13 @@ interface IMessage {
   time: string;
   username: string;
   port: number;
+  action: string;
 }
 
 const Chat = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
+  const { user, setIsLogged } = useUser();
 
   useEffect(() => {
     const pusher = new Pusher("1a896bd04c2e7bdcc160", {
@@ -47,10 +53,8 @@ const Chat = () => {
         await api.get("/ping");
         clearTimeout(timeoutId);
       } catch {
-        message.error(
-          "O servidor está indisponível (timeout de 10 segundos)",
-          7
-        );
+        message.error("O servidor está indisponível", 7);
+        setIsLogged(false);
       }
     };
 
@@ -69,8 +73,8 @@ const Chat = () => {
     if (newMessage.trim() !== "") {
       try {
         await api.post("/message", {
-          username: "larissa",
-          port: 8000,
+          username: user.name,
+          port: user.port,
           message: newMessage,
         });
         setNewMessage("");
@@ -82,7 +86,9 @@ const Chat = () => {
 
   return (
     <>
-      <ChatTimeline data={messages} />
+      <Row style={{ marginBottom: "50px" }}>
+        <ChatTimeline data={messages} />
+      </Row>
       <Row
         gutter={[16, 16]}
         style={{
@@ -113,7 +119,11 @@ const Chat = () => {
 const ChatTimeline = ({ data }: { data: IMessage[] }) => {
   const items: any = [];
   data.map((e) => {
-    generateTimeline(e, items);
+    if (e?.action) {
+      generateActions(e, items);
+    } else {
+      generateTimeline(e, items);
+    }
   });
 
   return (
@@ -175,6 +185,17 @@ const TextColor = ({ text, color }: { text: string; color?: string }) => {
       />
     </Text>
   );
+};
+
+const generateActions = (message: IMessage, items: any) => {
+  const name =
+    message.action === "join"
+      ? "fa-regular fa-face-awesome"
+      : "fa-regular fa-right-to-bracket";
+  items.push({
+    children: <Text>{message.message}</Text>,
+    dot: <Icon color="blue" name={name} size="30px" />,
+  });
 };
 
 export default Chat;
