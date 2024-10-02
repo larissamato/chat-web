@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useUser } from "@contexts/UserContext";
+import { message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import {
-  List,
   Input,
   Button,
   Row,
@@ -19,7 +18,7 @@ import Pusher from "pusher-js";
 import { api } from "@helpers/api";
 import { useTheme } from "styled-components";
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 interface IMessage {
   message: string;
   time: string;
@@ -41,22 +40,46 @@ const Chat = () => {
       setMessages((prevMessages) => [...prevMessages, data]);
     });
 
+    const pingServer = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      try {
+        await api.get("/ping");
+        clearTimeout(timeoutId);
+      } catch {
+        message.error(
+          "O servidor está indisponível (timeout de 10 segundos)",
+          7
+        );
+      }
+    };
+
+    const intervalId = setInterval(() => {
+      pingServer();
+    }, 10000);
+
     return () => {
       channel.unbind_all();
       channel.unsubscribe();
+      clearInterval(intervalId);
     };
   }, []);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== "") {
-      await api.post("/message", {
-        username: "larissa",
-        port: 8000,
-        message: newMessage,
-      });
-      setNewMessage("");
+      try {
+        await api.post("/message", {
+          username: "larissa",
+          port: 8000,
+          message: newMessage,
+        });
+        setNewMessage("");
+      } catch {
+        message.error("Erro ao fazer requisição", 7);
+      }
     }
   };
+
   return (
     <>
       <ChatTimeline data={messages} />
